@@ -1,0 +1,35 @@
+{
+  "name": "feishu-publisher",
+  "version": "0.1.18",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test test/*.test.js",
+    "check": "npm test && npm run build && node test/check-plugin.cjs",
+    "package": "python3 scripts/package.py"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "dependencies": {
+    "mdast-util-from-markdown": "2.0.3",
+    "mdast-util-gfm": "3.1.0",
+    "mdast-util-to-markdown": "2.1.2",
+    "micromark-extension-gfm": "3.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.1"
+  },
+  "description": "Publish Markdown notes to one Feishu document and save native named versions.",
+  "author": "gccplus",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gccplus/feishu-publisher.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gccplus/feishu-publisher/issues"
+  },
+  "homepage": "https://github.com/gccplus/feishu-publisher#readme"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "feishu-publisher",
+  "name": "Feishu Publisher",
+  "version": "0.1.18",
+  "minAppVersion": "1.11.4",
+  "description": "Publish Markdown notes to one Feishu document and save native named versions.",
+  "author": "gccplus",
+  "isDesktopOnly": true,
+  "authorUrl": "https://github.com/gccplus"
+}

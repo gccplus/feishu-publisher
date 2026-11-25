@@ -1,0 +1,43 @@
+name: Build and release
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: feishu-publisher-release
+  cancel-in-progress: false
+jobs:
+  release:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run package
+      - name: Publish version and install assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          VERSION=$(node -p 'JSON.parse(require("node:fs").readFileSync("manifest.json", "utf8")).version')
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid manifest version"
+            exit 1
+          fi
+          if gh release view "$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Version $VERSION already exists; keeping its published assets unchanged."
+            exit 0
+          fi
+          gh release create "$VERSION" main.js manifest.json LICENSE THIRD_PARTY_NOTICES.md \
+            "dist/feishu-publisher-$VERSION.zip" dist/SHA256SUMS \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "Feishu Publisher $VERSION" --notes-file docs/RELEASE_NOTES.md
